@@ -1,0 +1,13 @@
+{
+  "name": "dom-prof",
+  "version": "0.1.0",
+  "main": "./index.js",
+  "bin": { "dom-prof": "./cli.js" },
+  "dependencies": {
+    "css-explain": "latest"
+  },
+  "devDependencies": {
+    "coffee-script": "latest",
+    "nodeunit": "latest"
+  }
+}
