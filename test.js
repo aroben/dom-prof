@@ -34,6 +34,8 @@ module.exports = {
       test.equal(1, r.cssExplain.categories.tag);
       test.equal(1, r.cssExplain.categories.universal);
 
+      test.equal(3, r.eventListeners)
+
       test.equal(1, r.jquery.event.ready.total);
       test.equal(1, r.jquery.event.keydown.total);
       test.equal('textarea', r.jquery.event.keydown.selectors[0]);

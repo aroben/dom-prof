@@ -1,3 +1,38 @@
+eventListeners = 0
+
+winAddEventListener = window.addEventListener
+window.addEventListener = ->
+  eventListeners++
+  winAddEventListener.apply this, arguments
+
+winRemoveEventListener = window.removeEventListener
+window.removeEventListener = ->
+  eventListeners--
+  winRemoveEventListener.apply this, arguments
+
+
+docAddEventListener = document.addEventListener
+document.addEventListener = ->
+  eventListeners++
+  docAddEventListener.apply this, arguments
+
+docRemoveEventListener = document.removeEventListener
+document.removeEventListener = ->
+  eventListeners--
+  docRemoveEventListener.apply this, arguments
+
+
+elAddEventListener = Element.prototype.addEventListener
+Element.prototype.addEventListener = ->
+  eventListeners++
+  elAddEventListener.apply this, arguments
+
+elRemoveEventListener = Element.prototype.removeEventListener
+Element.prototype.removeEventListener = ->
+  eventListeners--
+  elRemoveEventListener.apply this, arguments
+
+
 jQuery = null
 
 window.__defineGetter__ 'jQuery', -> jQuery
@@ -216,6 +251,8 @@ window.$report = ->
 
   report.dom = computeNodesStats()
   report.dom.serializedSize = computeSerializedDomSize()
+
+  report.eventListeners = eventListeners
 
   report.cssRules = []
   for styleSheet in document.styleSheets
