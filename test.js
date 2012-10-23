@@ -34,8 +34,14 @@ module.exports = {
       test.equal(1, r.cssExplain.categories.tag);
       test.equal(1, r.cssExplain.categories.universal);
 
-      test.equal(1, r.eventListeners.keydown)
-      test.equal(1, r.eventListeners.keydown)
+      test.equal(5, r.eventListeners.total);
+      test.equal(1, r.eventListeners.calls.DOMContentLoaded);
+      test.equal(1, r.eventListeners.calls.load);
+      test.equal(1, r.eventListeners.calls.keydown);
+      test.equal(2, r.eventListeners.calls.click);
+
+      test.equal(6, r.querySelector.total)
+      test.equal(1, r.querySelector.calls['h1'])
 
       test.equal(1, r.jquery.event.ready.total);
       test.equal(1, r.jquery.event.keydown.total);

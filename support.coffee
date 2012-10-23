@@ -1,81 +1,70 @@
-eventListeners = {}
+now = ->
+  d = new Date
+  d.getTime()
 
-winAddEventListener = window.addEventListener
-window.addEventListener = (name) ->
-  eventListeners[name] ?= 0
-  eventListeners[name]++
-  winAddEventListener.apply this, arguments
-
-winRemoveEventListener = window.removeEventListener
-window.removeEventListener = (name) ->
-  eventListeners[name]--
-  winRemoveEventListener.apply this, arguments
+wrap = (obj, name, callback) ->
+  fun = obj[name]
+  obj[name] = ->
+    result = fun.apply this, arguments
+    callback.apply(this, arguments).call(this, result)
+    result
 
 
-docAddEventListener = document.addEventListener
-document.addEventListener = (name) ->
-  eventListeners[name] ?= 0
-  eventListeners[name]++
-  docAddEventListener.apply this, arguments
+addEventListenerCalls = []
 
-docRemoveEventListener = document.removeEventListener
-document.removeEventListener = (name) ->
-  eventListeners[name]--
-  docRemoveEventListener.apply this, arguments
+wrap window, 'addEventListener', (name, listener, capture) -> ->
+  addEventListenerCalls.push {node: 'window', timestamp: now(), name: name, capture: capture}
+
+wrap document, 'addEventListener', (name, listener, capture) -> ->
+  addEventListenerCalls.push {node: 'document', timestamp: now(), name: name, capture: capture}
+
+wrap Element.prototype, 'addEventListener', (name, listener, capture) -> ->
+  addEventListenerCalls.push {node: @nodeName.toLowerCase(), timestamp: now(), name: name, capture: capture}
 
 
-elAddEventListener = Element.prototype.addEventListener
-Element.prototype.addEventListener = (name) ->
-  eventListeners[name] ?= 0
-  eventListeners[name]++
-  elAddEventListener.apply this, arguments
+querySelectorAllCalls = []
+querySelectorCalls = []
 
-elRemoveEventListener = Element.prototype.removeEventListener
-Element.prototype.removeEventListener = (name) ->
-  eventListeners[name]--
-  elRemoveEventListener.apply this, arguments
+wrap document, 'querySelectorAll', (selector) -> (nodes) ->
+  querySelectorAllCalls.push {timestamp: now(), selector: selector, nodes: nodes.length}
+
+wrap Element.prototype, 'querySelectorAll', (selector) -> (nodes) ->
+  querySelectorAllCalls.push {timestamp: now(), selector: selector, nodes: nodes.length}
+
+wrap document, 'querySelector', (selector) -> (node) ->
+  querySelectorCalls.push {timestamp: now(), selector: selector, nodes: (if node then 1 else 0)}
+
+wrap Element.prototype, 'querySelector', (selector) -> (node) ->
+  querySelectorCalls.push {timestamp: now(), selector: selector, nodes: (if node then 1 else 0)}
+
 
 
 jQuery = null
 
 window.__defineGetter__ 'jQuery', -> jQuery
 
-jqueryReadyTotal = 0
-jqueryFindTotal = 0
-jqueryFindCalls = {}
-jqueryMatchTotal = 0
-jqueryMatchCalls = {}
+jqueryReadyCalls = []
+jqueryFindCalls  = []
+jqueryMatchCalls = []
 
 # Monkey patch jQuery with tracers when its defined
 window.__defineSetter__ 'jQuery', ($) ->
 
-  oldJqueryReadyPromise = $.ready.promise
-  $.ready.promise = ->
-    jqueryReadyTotal++
-    oldJqueryReadyPromise.apply this, arguments
+  wrap $.ready, 'promise', -> ->
+    jqueryReadyCalls.push {timestamp: now()}
 
-  oldJqueryFind = $.find
-  $.find = (selector) ->
-    jqueryFindCalls[selector] ?= 0
-    jqueryFindCalls[selector]++
-    jqueryFindTotal++
-    oldJqueryFind.apply this, arguments
+  oldFind = $.find
 
-  $.find[prop] = value for prop, value of oldJqueryFind
+  wrap $, 'find', (selector) -> (nodes) ->
+    jqueryFindCalls.push {timestamp: now(), selector: selector, nodes: nodes.length}
 
-  oldJqueryMatches = $.find.matches
-  $.find.matches = (expr) ->
-    jqueryMatchCalls[expr] ?= 0
-    jqueryMatchCalls[expr]++
-    jqueryMatchTotal++
-    oldJqueryMatches.apply this, arguments
+  $.find[prop] = value for prop, value of oldFind
 
-  oldJqueryMatchesSelector = $.find.matchesSelector
-  $.find.matchesSelector = (node, expr) ->
-    jqueryMatchCalls[expr] ?= 0
-    jqueryMatchCalls[expr]++
-    jqueryMatchTotal++
-    oldJqueryMatchesSelector.apply this, arguments
+  wrap $.find, 'matches', (expr) -> (matched) ->
+    jqueryMatchCalls.push {timestamp: now(), selector: expr, matched: matched}
+
+  wrap $.find, 'matchesSelector', (node, expr) -> (matched) ->
+    jqueryMatchCalls.push {timestamp: now(), selector: expr, matched: matched}
 
   jQuery = $
 
@@ -255,7 +244,14 @@ window.$report = ->
   report.dom = computeNodesStats()
   report.dom.serializedSize = computeSerializedDomSize()
 
-  report.eventListeners = eventListeners
+  report.calls =
+    addEventListener: addEventListenerCalls
+    querySelectorAll: querySelectorAllCalls
+    querySelector: querySelectorCalls
+    jquery:
+      ready: jqueryReadyCalls
+      find: jqueryFindCalls
+      match: jqueryMatchCalls
 
   report.cssRules = []
   for styleSheet in document.styleSheets
@@ -263,15 +259,7 @@ window.$report = ->
       report.cssRules.push cssRule.selectorText
 
   report.jquery =
-    event:
-      ready:
-        total: jqueryReadyTotal
-    find:
-      total: jqueryFindTotal
-      calls: jqueryFindCalls
-    match:
-      total: jqueryMatchTotal
-      calls: jqueryMatchCalls
+    event: {}
 
   for name, handlers of findJqueryEventHandlers()
     report.jquery.event[name] =

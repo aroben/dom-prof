@@ -12,6 +12,8 @@
     document.addEventListener("click", $.noop);
     $(document).on("keydown", "textarea", $.noop);
     $(function() {
+      document.querySelectorAll("h1");
+      document.querySelector("h2");
       $("h1").on("click", $.noop);
       document.removeEventListener("click", $.noop);
     });

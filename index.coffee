@@ -25,6 +25,20 @@ explainCssSelectors = (selectors) ->
 
   {total, categories, scores, keys}
 
+aggregateCallLog = (calls, propName) ->
+  report = total: 0, calls: {}
+
+  for call in calls
+    prop = call[propName]
+    report.calls[prop] ?= 0
+    report.calls[prop]++
+    report.total++
+
+  if propName is 'selector'
+    report.explain = explainCssSelectors (k for k, v of report.calls)
+
+  report
+
 
 exports.profile = (url, callback) ->
   exec "phantomjs --web-security=no #{__dirname}/runner.js #{url}", (error, stdout, stderr) ->
@@ -39,8 +53,15 @@ exports.profile = (url, callback) ->
 
       report.cssExplain = explainCssSelectors report.cssRules
 
-      report.jquery.find.explain  = explainCssSelectors (k for k, v of report.jquery.find.calls)
-      report.jquery.match.explain = explainCssSelectors (k for k, v of report.jquery.match.calls)
+      report.eventListeners = aggregateCallLog report.calls.addEventListener, 'name'
+      report.querySelector  = aggregateCallLog report.calls.querySelector.concat(report.calls.querySelectorAll), 'selector'
+
+      report.jquery.find  = aggregateCallLog report.calls.jquery.find, 'selector'
+      report.jquery.match = aggregateCallLog report.calls.jquery.match, 'selector'
+
+      report.jquery.event.ready = total: 0
+      for call in report.calls.jquery.ready
+        report.jquery.event.ready.total++
 
       for name, props of report.jquery.event when props.selectors?.length
         report.jquery.event[name].explain = explainCssSelectors props.selectors
