@@ -1,35 +1,38 @@
-eventListeners = 0
+eventListeners = {}
 
 winAddEventListener = window.addEventListener
-window.addEventListener = ->
-  eventListeners++
+window.addEventListener = (name) ->
+  eventListeners[name] ?= 0
+  eventListeners[name]++
   winAddEventListener.apply this, arguments
 
 winRemoveEventListener = window.removeEventListener
-window.removeEventListener = ->
-  eventListeners--
+window.removeEventListener = (name) ->
+  eventListeners[name]--
   winRemoveEventListener.apply this, arguments
 
 
 docAddEventListener = document.addEventListener
-document.addEventListener = ->
-  eventListeners++
+document.addEventListener = (name) ->
+  eventListeners[name] ?= 0
+  eventListeners[name]++
   docAddEventListener.apply this, arguments
 
 docRemoveEventListener = document.removeEventListener
-document.removeEventListener = ->
-  eventListeners--
+document.removeEventListener = (name) ->
+  eventListeners[name]--
   docRemoveEventListener.apply this, arguments
 
 
 elAddEventListener = Element.prototype.addEventListener
-Element.prototype.addEventListener = ->
-  eventListeners++
+Element.prototype.addEventListener = (name) ->
+  eventListeners[name] ?= 0
+  eventListeners[name]++
   elAddEventListener.apply this, arguments
 
 elRemoveEventListener = Element.prototype.removeEventListener
-Element.prototype.removeEventListener = ->
-  eventListeners--
+Element.prototype.removeEventListener = (name) ->
+  eventListeners[name]--
   elRemoveEventListener.apply this, arguments
 
 

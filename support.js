@@ -2,47 +2,59 @@
 (function() {
   var computeByteSize, computeNodesStats, computeSerializedDomSize, countParentNodes, docAddEventListener, docRemoveEventListener, elAddEventListener, elRemoveEventListener, eventListeners, findGlobals, findInlineScripts, findInlineStyles, findJqueryEventHandlers, findScripts, findStylesheetLinks, hasInlineScript, inlineEventAttrs, jQuery, jqueryFindCalls, jqueryFindTotal, jqueryMatchCalls, jqueryMatchTotal, jqueryReadyTotal, winAddEventListener, winRemoveEventListener;
 
-  eventListeners = 0;
+  eventListeners = {};
 
   winAddEventListener = window.addEventListener;
 
-  window.addEventListener = function() {
-    eventListeners++;
+  window.addEventListener = function(name) {
+    var _ref;
+    if ((_ref = eventListeners[name]) == null) {
+      eventListeners[name] = 0;
+    }
+    eventListeners[name]++;
     return winAddEventListener.apply(this, arguments);
   };
 
   winRemoveEventListener = window.removeEventListener;
 
-  window.removeEventListener = function() {
-    eventListeners--;
+  window.removeEventListener = function(name) {
+    eventListeners[name]--;
     return winRemoveEventListener.apply(this, arguments);
   };
 
   docAddEventListener = document.addEventListener;
 
-  document.addEventListener = function() {
-    eventListeners++;
+  document.addEventListener = function(name) {
+    var _ref;
+    if ((_ref = eventListeners[name]) == null) {
+      eventListeners[name] = 0;
+    }
+    eventListeners[name]++;
     return docAddEventListener.apply(this, arguments);
   };
 
   docRemoveEventListener = document.removeEventListener;
 
-  document.removeEventListener = function() {
-    eventListeners--;
+  document.removeEventListener = function(name) {
+    eventListeners[name]--;
     return docRemoveEventListener.apply(this, arguments);
   };
 
   elAddEventListener = Element.prototype.addEventListener;
 
-  Element.prototype.addEventListener = function() {
-    eventListeners++;
+  Element.prototype.addEventListener = function(name) {
+    var _ref;
+    if ((_ref = eventListeners[name]) == null) {
+      eventListeners[name] = 0;
+    }
+    eventListeners[name]++;
     return elAddEventListener.apply(this, arguments);
   };
 
   elRemoveEventListener = Element.prototype.removeEventListener;
 
-  Element.prototype.removeEventListener = function() {
-    eventListeners--;
+  Element.prototype.removeEventListener = function(name) {
+    eventListeners[name]--;
     return elRemoveEventListener.apply(this, arguments);
   };
 
