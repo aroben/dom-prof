@@ -59,7 +59,7 @@
         try {
           report = JSON.parse(stdout);
         } catch (e) {
-          callback(e);
+          callback(new Error(stdout));
           return;
         }
         report.cssExplain = explainCssSelectors(report.cssRules);
