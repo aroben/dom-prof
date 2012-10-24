@@ -2,11 +2,13 @@ now = ->
   d = new Date
   d.getTime()
 
+enabled = true
+
 wrap = (obj, name, callback) ->
   fun = obj[name]
   obj[name] = ->
     result = fun.apply this, arguments
-    callback.apply(this, arguments).call(this, result)
+    callback.apply(this, arguments).call(this, result) if enabled
     result
 
 
@@ -250,6 +252,8 @@ findJqueryEventHandlers = ->
 
 
 window.$report = ->
+  enabled = false
+
   report =
     scriptTags: findScripts().length
     stylesheetLinks: findStylesheetLinks().length
