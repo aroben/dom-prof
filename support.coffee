@@ -37,7 +37,7 @@ wrap Element.prototype, 'getElementsByTagName', (tag) -> (nodes) ->
 calls.getElementsByClassName = []
 wrap document, 'getElementsByClassName', (name) -> (nodes) ->
   calls.getElementsByClassName.push {timestamp: now(), selector: ".#{name}", nodes: nodes.length}
-wrap Element.prototype, 'getElementsByClassName', (tag) -> (nodes) ->
+wrap Element.prototype, 'getElementsByClassName', (name) -> (nodes) ->
   calls.getElementsByClassName.push {timestamp: now(), selector: ".#{name}", nodes: nodes.length}
 
 

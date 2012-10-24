@@ -102,7 +102,7 @@
     };
   });
 
-  wrap(Element.prototype, 'getElementsByClassName', function(tag) {
+  wrap(Element.prototype, 'getElementsByClassName', function(name) {
     return function(nodes) {
       return calls.getElementsByClassName.push({
         timestamp: now(),
