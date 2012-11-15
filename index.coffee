@@ -1,4 +1,4 @@
-{exec} = require 'child_process'
+{spawn} = require 'child_process'
 {cssExplain} = require 'css-explain'
 
 # Run CSS Explain on selectors and aggregate the results
@@ -41,14 +41,21 @@ aggregateCallLog = (calls, propName) ->
 
 
 exports.profile = (url, callback) ->
-  exec "phantomjs --web-security=no #{__dirname}/runner.js #{url}", (error, stdout, stderr) ->
-    if error
-      callback error
+  phantomjs = spawn 'phantomjs', ['--web-security=no', "#{__dirname}/runner.js", url]
+
+  stdout = []
+  phantomjs.stdout.setEncoding 'utf8'
+  phantomjs.stdout.on 'data', (data) ->
+    stdout.push data
+
+  phantomjs.on 'exit', (code) ->
+    if code isnt 0
+      callback new Error "phantomjs exited with code #{code}"
     else
       try
-        report = JSON.parse stdout
+        report = JSON.parse stdout.join("")
       catch e
-        callback new Error stdout
+        callback new Error stdout.join("")
         return
 
       report.cssExplain = explainCssSelectors report.cssRules
