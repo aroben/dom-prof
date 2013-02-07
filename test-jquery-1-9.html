@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * {}
+    body {}
+    .foo {}
+    #foo {}
+  </style>
+  <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+  <script>
+    document.addEventListener("click", $.noop);
+    $(document).on("keydown", "textarea", $.noop);
+    $(function() {
+      document.querySelectorAll("h1");
+      document.querySelector("h2");
+      $("h1").on("click", $.noop);
+      document.removeEventListener("click", $.noop);
+    });
+  </script>
+</head>
+<body>
+  <h1>Hello</h1>
+</body>
+</html>
