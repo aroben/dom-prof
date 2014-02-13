@@ -1,6 +1,7 @@
 {spawn} = require 'child_process'
 {cssExplain} = require 'css-explain'
 {Promise} = require 'es6-promise'
+phantomjsPath = require('phantomjs').path
 
 # Run CSS Explain on selectors and aggregate the results
 explainCssSelectors = (selectors) ->
@@ -43,7 +44,7 @@ aggregateCallLog = (calls, propName) ->
 
 exports.profile = (url) ->
   new Promise (resolve, reject) ->
-    phantomjs = spawn 'phantomjs', ['--web-security=no', "#{__dirname}/runner.js", url]
+    phantomjs = spawn phantomjsPath, ['--web-security=no', "#{__dirname}/runner.js", url]
 
     stdout = []
     phantomjs.stdout.setEncoding 'utf8'

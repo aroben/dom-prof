@@ -1,11 +1,13 @@
 (function() {
-  var Promise, aggregateCallLog, cssExplain, explainCssSelectors, spawn;
+  var Promise, aggregateCallLog, cssExplain, explainCssSelectors, phantomjsPath, spawn;
 
   spawn = require('child_process').spawn;
 
   cssExplain = require('css-explain').cssExplain;
 
   Promise = require('es6-promise').Promise;
+
+  phantomjsPath = require('phantomjs').path;
 
   explainCssSelectors = function(selectors) {
     var categories, keys, report, scores, total, _i, _len, _name, _ref;
@@ -84,7 +86,7 @@
   exports.profile = function(url) {
     return new Promise(function(resolve, reject) {
       var phantomjs, stdout;
-      phantomjs = spawn('phantomjs', ['--web-security=no', "" + __dirname + "/runner.js", url]);
+      phantomjs = spawn(phantomjsPath, ['--web-security=no', "" + __dirname + "/runner.js", url]);
       stdout = [];
       phantomjs.stdout.setEncoding('utf8');
       phantomjs.stdout.on('data', function(data) {
