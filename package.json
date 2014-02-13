@@ -9,7 +9,7 @@
     "css-explain": "~0.1.0"
   },
   "devDependencies": {
-    "coffee-script": "latest",
+    "coffee-script": "1.7.1",
     "grunt": "~0.4.2",
     "grunt-contrib-nodeunit": "~0.3.0"
   }
