@@ -13,12 +13,7 @@ module.exports = {
         });
       }).listen(0);
 
-      profile('http://localhost:'+server.address().port, function(err, r) {
-        test.ifError(err);
-        if (err) {
-          return test.done();
-        }
-
+      profile('http://localhost:'+server.address().port).then(function(r) {
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
         test.equal(2.4285714285714284, r.dom.averageDepth);
@@ -61,6 +56,9 @@ module.exports = {
 
         server.close();
         test.done();
+      }, function(err) {
+        test.ifError(err);
+        test.done();
       });
     }
   },
@@ -74,12 +72,7 @@ module.exports = {
         });
       }).listen(0);
 
-      profile('http://localhost:'+server.address().port, function(err, r) {
-        test.ifError(err);
-        if (err) {
-          return test.done();
-        }
-
+      profile('http://localhost:'+server.address().port).then(function(r) {
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
         test.equal(2.4285714285714284, r.dom.averageDepth);
@@ -121,6 +114,9 @@ module.exports = {
         test.equal(null, r.jquery.match.calls.h1);
 
         server.close();
+        test.done();
+      }, function(err) {
+        test.ifError(err);
         test.done();
       });
     }
@@ -135,12 +131,7 @@ module.exports = {
         });
       }).listen(0);
 
-      profile('http://localhost:'+server.address().port, function(err, r) {
-        test.ifError(err);
-        if (err) {
-          return test.done();
-        }
-
+      profile('http://localhost:'+server.address().port).then(function(r) {
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
         test.equal(2.4285714285714284, r.dom.averageDepth);
@@ -182,6 +173,9 @@ module.exports = {
         test.equal(null, r.jquery.match.calls.h1);
 
         server.close();
+        test.done();
+      }, function(err) {
+        test.ifError(err);
         test.done();
       });
     }
@@ -196,12 +190,7 @@ module.exports = {
         });
       }).listen(0);
 
-      profile('http://localhost:'+server.address().port, function(err, r) {
-        test.ifError(err);
-        if (err) {
-          return test.done();
-        }
-
+      profile('http://localhost:'+server.address().port).then(function(r) {
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
         test.equal(2.4285714285714284, r.dom.averageDepth);
@@ -244,6 +233,9 @@ module.exports = {
 
         server.close();
         test.done();
+      }, function(err) {
+        test.ifError(err);
+        test.done();
       });
     }
   },
@@ -257,12 +249,7 @@ module.exports = {
         });
       }).listen(0);
 
-      profile('http://localhost:'+server.address().port, function(err, r) {
-        test.ifError(err);
-        if (err) {
-          return test.done();
-        }
-
+      profile('http://localhost:'+server.address().port).then(function(r) {
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
         test.equal(2.4285714285714284, r.dom.averageDepth);
@@ -305,6 +292,9 @@ module.exports = {
 
         server.close();
         test.done();
+      }, function(err) {
+        test.ifError(err);
+        test.done();
       });
     }
   },
@@ -318,12 +308,7 @@ module.exports = {
         });
       }).listen(0);
 
-      profile('http://localhost:'+server.address().port, function(err, r) {
-        test.ifError(err);
-        if (err) {
-          return test.done();
-        }
-
+      profile('http://localhost:'+server.address().port).then(function(r) {
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
         test.equal(2.4285714285714284, r.dom.averageDepth);
@@ -365,6 +350,9 @@ module.exports = {
         test.equal(null, r.jquery.match.calls.h1);
 
         server.close();
+        test.done();
+      }, function(err) {
+        test.ifError(err);
         test.done();
       });
     }

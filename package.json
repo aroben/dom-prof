@@ -6,7 +6,8 @@
     "dom-prof": "./cli.js"
   },
   "dependencies": {
-    "css-explain": "~0.1.0"
+    "css-explain": "~0.1.0",
+    "es6-promise": "~0.1.1"
   },
   "devDependencies": {
     "grunt": "~0.4.2",

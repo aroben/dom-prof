@@ -1,9 +1,11 @@
 (function() {
-  var aggregateCallLog, cssExplain, explainCssSelectors, spawn;
+  var Promise, aggregateCallLog, cssExplain, explainCssSelectors, spawn;
 
   spawn = require('child_process').spawn;
 
   cssExplain = require('css-explain').cssExplain;
+
+  Promise = require('es6-promise').Promise;
 
   explainCssSelectors = function(selectors) {
     var categories, keys, report, scores, total, _i, _len, _name, _ref;
@@ -79,48 +81,53 @@
     return report;
   };
 
-  exports.profile = function(url, callback) {
-    var phantomjs, stdout;
-    phantomjs = spawn('phantomjs', ['--web-security=no', "" + __dirname + "/runner.js", url]);
-    stdout = [];
-    phantomjs.stdout.setEncoding('utf8');
-    phantomjs.stdout.on('data', function(data) {
-      return stdout.push(data);
-    });
-    return phantomjs.on('exit', function(code) {
-      var call, e, name, props, report, _i, _len, _ref, _ref1, _ref2;
-      if (code !== 0) {
-        return callback(new Error("phantomjs exited with code " + code));
-      } else {
-        try {
-          report = JSON.parse(stdout.join(""));
-        } catch (_error) {
-          e = _error;
-          callback(new Error(stdout.join("")));
-          return;
-        }
-        report.cssExplain = explainCssSelectors(report.cssRules);
-        report.eventListeners = aggregateCallLog(report.calls.addEventListener, 'name');
-        report.querySelector = aggregateCallLog(report.calls.querySelector.concat(report.calls.querySelectorAll), 'selector');
-        report.jquery.find = aggregateCallLog(report.calls.jquery.find, 'selector');
-        report.jquery.match = aggregateCallLog(report.calls.jquery.match, 'selector');
-        report.jquery.event.ready = {
-          total: 0
-        };
-        _ref = report.calls.jquery.ready;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          call = _ref[_i];
-          report.jquery.event.ready.total++;
-        }
-        _ref1 = report.jquery.event;
-        for (name in _ref1) {
-          props = _ref1[name];
-          if ((_ref2 = props.selectors) != null ? _ref2.length : void 0) {
-            report.jquery.event[name].explain = explainCssSelectors(props.selectors);
+  exports.profile = function(url) {
+    return new Promise(function(resolve, reject) {
+      var phantomjs, stdout;
+      phantomjs = spawn('phantomjs', ['--web-security=no', "" + __dirname + "/runner.js", url]);
+      stdout = [];
+      phantomjs.stdout.setEncoding('utf8');
+      phantomjs.stdout.on('data', function(data) {
+        return stdout.push(data);
+      });
+      phantomjs.on('error', function(err) {
+        return reject(err);
+      });
+      return phantomjs.on('exit', function(code) {
+        var call, e, name, props, report, _i, _len, _ref, _ref1, _ref2;
+        if (code !== 0) {
+          return reject(new Error("phantomjs exited with code " + code));
+        } else {
+          try {
+            report = JSON.parse(stdout.join(""));
+          } catch (_error) {
+            e = _error;
+            reject(new Error(stdout.join("")));
+            return;
           }
+          report.cssExplain = explainCssSelectors(report.cssRules);
+          report.eventListeners = aggregateCallLog(report.calls.addEventListener, 'name');
+          report.querySelector = aggregateCallLog(report.calls.querySelector.concat(report.calls.querySelectorAll), 'selector');
+          report.jquery.find = aggregateCallLog(report.calls.jquery.find, 'selector');
+          report.jquery.match = aggregateCallLog(report.calls.jquery.match, 'selector');
+          report.jquery.event.ready = {
+            total: 0
+          };
+          _ref = report.calls.jquery.ready;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            call = _ref[_i];
+            report.jquery.event.ready.total++;
+          }
+          _ref1 = report.jquery.event;
+          for (name in _ref1) {
+            props = _ref1[name];
+            if ((_ref2 = props.selectors) != null ? _ref2.length : void 0) {
+              report.jquery.event[name].explain = explainCssSelectors(props.selectors);
+            }
+          }
+          return resolve(report);
         }
-        return callback(void 0, report);
-      }
+      });
     });
   };
 

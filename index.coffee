@@ -1,5 +1,6 @@
 {spawn} = require 'child_process'
 {cssExplain} = require 'css-explain'
+{Promise} = require 'es6-promise'
 
 # Run CSS Explain on selectors and aggregate the results
 explainCssSelectors = (selectors) ->
@@ -40,37 +41,41 @@ aggregateCallLog = (calls, propName) ->
   report
 
 
-exports.profile = (url, callback) ->
-  phantomjs = spawn 'phantomjs', ['--web-security=no', "#{__dirname}/runner.js", url]
+exports.profile = (url) ->
+  new Promise (resolve, reject) ->
+    phantomjs = spawn 'phantomjs', ['--web-security=no', "#{__dirname}/runner.js", url]
 
-  stdout = []
-  phantomjs.stdout.setEncoding 'utf8'
-  phantomjs.stdout.on 'data', (data) ->
-    stdout.push data
+    stdout = []
+    phantomjs.stdout.setEncoding 'utf8'
+    phantomjs.stdout.on 'data', (data) ->
+      stdout.push data
 
-  phantomjs.on 'exit', (code) ->
-    if code isnt 0
-      callback new Error "phantomjs exited with code #{code}"
-    else
-      try
-        report = JSON.parse stdout.join("")
-      catch e
-        callback new Error stdout.join("")
-        return
+    phantomjs.on 'error', (err) ->
+      reject err
 
-      report.cssExplain = explainCssSelectors report.cssRules
+    phantomjs.on 'exit', (code) ->
+      if code isnt 0
+        reject new Error "phantomjs exited with code #{code}"
+      else
+        try
+          report = JSON.parse stdout.join("")
+        catch e
+          reject new Error stdout.join("")
+          return
 
-      report.eventListeners = aggregateCallLog report.calls.addEventListener, 'name'
-      report.querySelector  = aggregateCallLog report.calls.querySelector.concat(report.calls.querySelectorAll), 'selector'
+        report.cssExplain = explainCssSelectors report.cssRules
 
-      report.jquery.find  = aggregateCallLog report.calls.jquery.find, 'selector'
-      report.jquery.match = aggregateCallLog report.calls.jquery.match, 'selector'
+        report.eventListeners = aggregateCallLog report.calls.addEventListener, 'name'
+        report.querySelector  = aggregateCallLog report.calls.querySelector.concat(report.calls.querySelectorAll), 'selector'
 
-      report.jquery.event.ready = total: 0
-      for call in report.calls.jquery.ready
-        report.jquery.event.ready.total++
+        report.jquery.find  = aggregateCallLog report.calls.jquery.find, 'selector'
+        report.jquery.match = aggregateCallLog report.calls.jquery.match, 'selector'
 
-      for name, props of report.jquery.event when props.selectors?.length
-        report.jquery.event[name].explain = explainCssSelectors props.selectors
+        report.jquery.event.ready = total: 0
+        for call in report.calls.jquery.ready
+          report.jquery.event.ready.total++
 
-      callback undefined, report
+        for name, props of report.jquery.event when props.selectors?.length
+          report.jquery.event[name].explain = explainCssSelectors props.selectors
+
+        resolve report

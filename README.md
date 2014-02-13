@@ -7,7 +7,7 @@ Node/PhantomJS DOM profiler. Based off some of the ideas in [dom-monster](https:
 
 ``` javascript
 var profile = require('dom-prof').profile;
-profile("http://google.com", function(err, report) {
+profile("http://google.com").then(report) {
   console.log(report);
 });
 ```
