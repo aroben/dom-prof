@@ -1,5 +1,35 @@
 module.exports = function(grunt) {
   grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
+    jshint: {
+      options: {
+        curly: true,
+        eqeqeq: true,
+        es3: true,
+        immed: true,
+        indent: 2,
+        latedef: true,
+        newcap: true,
+        noarg: true,
+        quotmark: true,
+        undef: true,
+        unused: true,
+        trailing: true,
+        boss: true,
+        eqnull: true,
+        browser: true,
+        phantom: true
+      },
+      grunt: {
+        src: ['Gruntfile.js'],
+        options: {
+          node: true
+        }
+      },
+      src: {
+        src: ['cli.js', 'runner.js']
+      }
+    },
     coffee: {
       all: {
         files: {
@@ -14,7 +44,8 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-contrib-coffee');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
-  grunt.registerTask('default', ['coffee', 'nodeunit']);
+  grunt.registerTask('default', ['coffee', 'jshint', 'nodeunit']);
 };
