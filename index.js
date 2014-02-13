@@ -1,13 +1,13 @@
 (function() {
-  var Promise, aggregateCallLog, cssExplain, explainCssSelectors, phantomjsPath, spawn;
+  var Promise, aggregateCallLog, cssExplain, execFile, explainCssSelectors, phantomjs;
 
-  spawn = require('child_process').spawn;
+  execFile = require('child_process').execFile;
 
   cssExplain = require('css-explain').cssExplain;
 
   Promise = require('es6-promise').Promise;
 
-  phantomjsPath = require('phantomjs').path;
+  phantomjs = require('phantomjs');
 
   explainCssSelectors = function(selectors) {
     var categories, keys, report, scores, total, _i, _len, _name, _ref;
@@ -85,50 +85,33 @@
 
   exports.profile = function(url) {
     return new Promise(function(resolve, reject) {
-      var phantomjs, stdout;
-      phantomjs = spawn(phantomjsPath, ['--web-security=no', "" + __dirname + "/runner.js", url]);
-      stdout = [];
-      phantomjs.stdout.setEncoding('utf8');
-      phantomjs.stdout.on('data', function(data) {
-        return stdout.push(data);
-      });
-      phantomjs.on('error', function(err) {
-        return reject(err);
-      });
-      return phantomjs.on('exit', function(code) {
-        var call, e, name, props, report, _i, _len, _ref, _ref1, _ref2;
-        if (code !== 0) {
-          return reject(new Error("phantomjs exited with code " + code));
-        } else {
-          try {
-            report = JSON.parse(stdout.join(""));
-          } catch (_error) {
-            e = _error;
-            reject(new Error(stdout.join("")));
-            return;
-          }
-          report.cssExplain = explainCssSelectors(report.cssRules);
-          report.eventListeners = aggregateCallLog(report.calls.addEventListener, 'name');
-          report.querySelector = aggregateCallLog(report.calls.querySelector.concat(report.calls.querySelectorAll), 'selector');
-          report.jquery.find = aggregateCallLog(report.calls.jquery.find, 'selector');
-          report.jquery.match = aggregateCallLog(report.calls.jquery.match, 'selector');
-          report.jquery.event.ready = {
-            total: 0
-          };
-          _ref = report.calls.jquery.ready;
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            call = _ref[_i];
-            report.jquery.event.ready.total++;
-          }
-          _ref1 = report.jquery.event;
-          for (name in _ref1) {
-            props = _ref1[name];
-            if ((_ref2 = props.selectors) != null ? _ref2.length : void 0) {
-              report.jquery.event[name].explain = explainCssSelectors(props.selectors);
-            }
-          }
-          return resolve(report);
+      return execFile(phantomjs.path, ['--web-security=no', "" + __dirname + "/runner.js", url], function(error, stdout) {
+        var call, name, props, report, _i, _len, _ref, _ref1, _ref2;
+        if (error) {
+          return reject(error);
         }
+        report = JSON.parse(stdout);
+        report.cssExplain = explainCssSelectors(report.cssRules);
+        report.eventListeners = aggregateCallLog(report.calls.addEventListener, 'name');
+        report.querySelector = aggregateCallLog(report.calls.querySelector.concat(report.calls.querySelectorAll), 'selector');
+        report.jquery.find = aggregateCallLog(report.calls.jquery.find, 'selector');
+        report.jquery.match = aggregateCallLog(report.calls.jquery.match, 'selector');
+        report.jquery.event.ready = {
+          total: 0
+        };
+        _ref = report.calls.jquery.ready;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          call = _ref[_i];
+          report.jquery.event.ready.total++;
+        }
+        _ref1 = report.jquery.event;
+        for (name in _ref1) {
+          props = _ref1[name];
+          if ((_ref2 = props.selectors) != null ? _ref2.length : void 0) {
+            report.jquery.event[name].explain = explainCssSelectors(props.selectors);
+          }
+        }
+        return resolve(report);
       });
     });
   };
