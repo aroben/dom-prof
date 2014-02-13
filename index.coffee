@@ -49,7 +49,7 @@ aggregateCallLog = (calls, propName) ->
 
 
 exports.profile = (url) ->
-  execFile(phantomjs.path, ['--web-security=no', "#{__dirname}/runner.js", url]).then ([stdout]) ->
+  execFile(phantomjs.path, ['--web-security=no', "#{__dirname}/runner.js", url], maxBuffer: 1024*1024).then ([stdout]) ->
     report = JSON.parse stdout
     report.cssExplain = explainCssSelectors report.cssRules
 

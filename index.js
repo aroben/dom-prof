@@ -101,7 +101,9 @@
   };
 
   exports.profile = function(url) {
-    return execFile(phantomjs.path, ['--web-security=no', "" + __dirname + "/runner.js", url]).then(function(_arg) {
+    return execFile(phantomjs.path, ['--web-security=no', "" + __dirname + "/runner.js", url], {
+      maxBuffer: 1024 * 1024
+    }).then(function(_arg) {
       var call, name, props, report, stdout, _i, _len, _ref, _ref1, _ref2;
       stdout = _arg[0];
       report = JSON.parse(stdout);
