@@ -1,13 +1,30 @@
 (function() {
-  var Promise, aggregateCallLog, cssExplain, execFile, explainCssSelectors, phantomjs;
-
-  execFile = require('child_process').execFile;
+  var Promise, aggregateCallLog, childProcess, cssExplain, execFile, explainCssSelectors, phantomjs,
+    __slice = [].slice;
 
   cssExplain = require('css-explain').cssExplain;
 
   Promise = require('es6-promise').Promise;
 
   phantomjs = require('phantomjs');
+
+  childProcess = require('child_process');
+
+  execFile = function() {
+    var args;
+    args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    return new Promise(function(resolve, reject) {
+      return childProcess.execFile.apply(childProcess, __slice.call(args).concat([function() {
+        var args, error;
+        error = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+        if (error) {
+          return reject(error);
+        } else {
+          return resolve(args);
+        }
+      }]));
+    });
+  };
 
   explainCssSelectors = function(selectors) {
     var categories, keys, report, scores, total, _i, _len, _name, _ref;
@@ -84,35 +101,31 @@
   };
 
   exports.profile = function(url) {
-    return new Promise(function(resolve, reject) {
-      return execFile(phantomjs.path, ['--web-security=no', "" + __dirname + "/runner.js", url], function(error, stdout) {
-        var call, name, props, report, _i, _len, _ref, _ref1, _ref2;
-        if (error) {
-          return reject(error);
+    return execFile(phantomjs.path, ['--web-security=no', "" + __dirname + "/runner.js", url]).then(function(_arg) {
+      var call, name, props, report, stdout, _i, _len, _ref, _ref1, _ref2;
+      stdout = _arg[0];
+      report = JSON.parse(stdout);
+      report.cssExplain = explainCssSelectors(report.cssRules);
+      report.eventListeners = aggregateCallLog(report.calls.addEventListener, 'name');
+      report.querySelector = aggregateCallLog(report.calls.querySelector.concat(report.calls.querySelectorAll), 'selector');
+      report.jquery.find = aggregateCallLog(report.calls.jquery.find, 'selector');
+      report.jquery.match = aggregateCallLog(report.calls.jquery.match, 'selector');
+      report.jquery.event.ready = {
+        total: 0
+      };
+      _ref = report.calls.jquery.ready;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        call = _ref[_i];
+        report.jquery.event.ready.total++;
+      }
+      _ref1 = report.jquery.event;
+      for (name in _ref1) {
+        props = _ref1[name];
+        if ((_ref2 = props.selectors) != null ? _ref2.length : void 0) {
+          report.jquery.event[name].explain = explainCssSelectors(props.selectors);
         }
-        report = JSON.parse(stdout);
-        report.cssExplain = explainCssSelectors(report.cssRules);
-        report.eventListeners = aggregateCallLog(report.calls.addEventListener, 'name');
-        report.querySelector = aggregateCallLog(report.calls.querySelector.concat(report.calls.querySelectorAll), 'selector');
-        report.jquery.find = aggregateCallLog(report.calls.jquery.find, 'selector');
-        report.jquery.match = aggregateCallLog(report.calls.jquery.match, 'selector');
-        report.jquery.event.ready = {
-          total: 0
-        };
-        _ref = report.calls.jquery.ready;
-        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-          call = _ref[_i];
-          report.jquery.event.ready.total++;
-        }
-        _ref1 = report.jquery.event;
-        for (name in _ref1) {
-          props = _ref1[name];
-          if ((_ref2 = props.selectors) != null ? _ref2.length : void 0) {
-            report.jquery.event[name].explain = explainCssSelectors(props.selectors);
-          }
-        }
-        return resolve(report);
-      });
+      }
+      return report;
     });
   };
 

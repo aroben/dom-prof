@@ -1,7 +1,13 @@
-{execFile} = require 'child_process'
 {cssExplain} = require 'css-explain'
 {Promise} = require 'es6-promise'
 phantomjs = require 'phantomjs'
+
+childProcess = require 'child_process'
+execFile = (args...) ->
+  new Promise (resolve, reject) ->
+    childProcess.execFile args..., (error, args...) ->
+      if error then reject(error) else resolve(args)
+
 
 # Run CSS Explain on selectors and aggregate the results
 explainCssSelectors = (selectors) ->
@@ -43,24 +49,21 @@ aggregateCallLog = (calls, propName) ->
 
 
 exports.profile = (url) ->
-  new Promise (resolve, reject) ->
-    execFile phantomjs.path, ['--web-security=no', "#{__dirname}/runner.js", url], (error, stdout) ->
-      return reject error if error
+  execFile(phantomjs.path, ['--web-security=no', "#{__dirname}/runner.js", url]).then ([stdout]) ->
+    report = JSON.parse stdout
+    report.cssExplain = explainCssSelectors report.cssRules
 
-      report = JSON.parse stdout
-      report.cssExplain = explainCssSelectors report.cssRules
+    report.eventListeners = aggregateCallLog report.calls.addEventListener, 'name'
+    report.querySelector  = aggregateCallLog report.calls.querySelector.concat(report.calls.querySelectorAll), 'selector'
 
-      report.eventListeners = aggregateCallLog report.calls.addEventListener, 'name'
-      report.querySelector  = aggregateCallLog report.calls.querySelector.concat(report.calls.querySelectorAll), 'selector'
+    report.jquery.find  = aggregateCallLog report.calls.jquery.find, 'selector'
+    report.jquery.match = aggregateCallLog report.calls.jquery.match, 'selector'
 
-      report.jquery.find  = aggregateCallLog report.calls.jquery.find, 'selector'
-      report.jquery.match = aggregateCallLog report.calls.jquery.match, 'selector'
+    report.jquery.event.ready = total: 0
+    for call in report.calls.jquery.ready
+      report.jquery.event.ready.total++
 
-      report.jquery.event.ready = total: 0
-      for call in report.calls.jquery.ready
-        report.jquery.event.ready.total++
+    for name, props of report.jquery.event when props.selectors?.length
+      report.jquery.event[name].explain = explainCssSelectors props.selectors
 
-      for name, props of report.jquery.event when props.selectors?.length
-        report.jquery.event[name].explain = explainCssSelectors props.selectors
-
-      resolve report
+    report
