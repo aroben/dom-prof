@@ -2,12 +2,15 @@
   "name": "dom-prof",
   "version": "0.2.3",
   "main": "./index.js",
-  "bin": { "dom-prof": "./cli.js" },
+  "bin": {
+    "dom-prof": "./cli.js"
+  },
   "dependencies": {
     "css-explain": "latest"
   },
   "devDependencies": {
     "coffee-script": "latest",
-    "nodeunit": "latest"
+    "grunt": "~0.4.2",
+    "grunt-contrib-nodeunit": "~0.3.0"
   }
 }

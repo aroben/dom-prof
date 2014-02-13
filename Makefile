@@ -6,7 +6,4 @@ node_modules:
 
 build: node_modules index.js support.js
 
-test: build
-	./node_modules/.bin/nodeunit test.js
-
 .PHONY: test
