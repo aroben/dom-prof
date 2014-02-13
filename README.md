@@ -18,10 +18,11 @@ profile("http://google.com", function(err, report) {
 
     $ git clone https://github.com/josh/dom-prof.git
     $ cd dom-prof/
+    $ npm install
 
 Run tests
 
-    $ make test
+    $ grunt test
 
 
 ## See Also
