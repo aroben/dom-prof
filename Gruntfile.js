@@ -5,7 +5,6 @@ module.exports = function(grunt) {
       options: {
         curly: true,
         eqeqeq: true,
-        es3: true,
         immed: true,
         indent: 2,
         latedef: true,
@@ -18,6 +17,7 @@ module.exports = function(grunt) {
         boss: true,
         eqnull: true,
         browser: true,
+        node: true,
         phantom: true
       },
       grunt: {
@@ -28,6 +28,9 @@ module.exports = function(grunt) {
       },
       src: {
         src: ['cli.js', 'runner.js']
+      },
+      test: {
+        src: ['test/test.js']
       }
     },
     coffee: {
@@ -39,7 +42,7 @@ module.exports = function(grunt) {
       }
     },
     nodeunit: {
-      all: ['test.js']
+      all: ['test/test.js']
     }
   });
 

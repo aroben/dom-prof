@@ -1,11 +1,11 @@
 var fs   = require('fs');
 var http = require('http');
 
-var profile = require('./index').profile;
+var profile = require('../index').profile;
 
 module.exports = {
-  "jquery 1.8.x": {
-    "profile": function(test) {
+  'jquery 1.8.x': {
+    'profile': function(test) {
       var server = http.createServer(function(req, res) {
         res.writeHead(200, {'Content-Type': 'text/html'});
         fs.readFile(__dirname+'/test-jquery-1-8.html', 'utf8', function(err, data) {
@@ -13,9 +13,11 @@ module.exports = {
         });
       }).listen(0);
 
-      profile("http://localhost:"+server.address().port, function(err, r) {
+      profile('http://localhost:'+server.address().port, function(err, r) {
         test.ifError(err);
-        if (err) return test.done();
+        if (err) {
+          return test.done();
+        }
 
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
@@ -41,8 +43,8 @@ module.exports = {
         test.equal(1, r.eventListeners.calls.keydown);
         test.equal(2, r.eventListeners.calls.click);
 
-        test.equal(6, r.querySelector.total)
-        test.equal(1, r.querySelector.calls['h1'])
+        test.equal(6, r.querySelector.total);
+        test.equal(1, r.querySelector.calls.h1);
 
         test.equal(1, r.jquery.event.ready.total);
         test.equal(1, r.jquery.event.keydown.total);
@@ -51,11 +53,11 @@ module.exports = {
         test.equal(null, r.jquery.event.focus);
 
         test.equal(1, r.jquery.find.total);
-        test.equal(1, r.jquery.find.calls['h1']);
+        test.equal(1, r.jquery.find.calls.h1);
         test.equal(1, r.jquery.find.explain.categories.tag);
 
         test.equal(0, r.jquery.match.total);
-        test.equal(null, r.jquery.match.calls['h1']);
+        test.equal(null, r.jquery.match.calls.h1);
 
         server.close();
         test.done();
@@ -63,8 +65,8 @@ module.exports = {
     }
   },
 
-  "jquery 1.9.x": {
-    "profile": function(test) {
+  'jquery 1.9.x': {
+    'profile': function(test) {
       var server = http.createServer(function(req, res) {
         res.writeHead(200, {'Content-Type': 'text/html'});
         fs.readFile(__dirname+'/test-jquery-1-9.html', 'utf8', function(err, data) {
@@ -72,9 +74,11 @@ module.exports = {
         });
       }).listen(0);
 
-      profile("http://localhost:"+server.address().port, function(err, r) {
+      profile('http://localhost:'+server.address().port, function(err, r) {
         test.ifError(err);
-        if (err) return test.done();
+        if (err) {
+          return test.done();
+        }
 
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
@@ -100,8 +104,8 @@ module.exports = {
         test.equal(1, r.eventListeners.calls.keydown);
         test.equal(2, r.eventListeners.calls.click);
 
-        test.equal(2, r.querySelector.total)
-        test.equal(1, r.querySelector.calls['h1'])
+        test.equal(2, r.querySelector.total);
+        test.equal(1, r.querySelector.calls.h1);
 
         test.equal(1, r.jquery.event.ready.total);
         test.equal(1, r.jquery.event.keydown.total);
@@ -110,11 +114,11 @@ module.exports = {
         test.equal(null, r.jquery.event.focus);
 
         test.equal(1, r.jquery.find.total);
-        test.equal(1, r.jquery.find.calls['h1']);
+        test.equal(1, r.jquery.find.calls.h1);
         test.equal(1, r.jquery.find.explain.categories.tag);
 
         test.equal(0, r.jquery.match.total);
-        test.equal(null, r.jquery.match.calls['h1']);
+        test.equal(null, r.jquery.match.calls.h1);
 
         server.close();
         test.done();
@@ -122,8 +126,8 @@ module.exports = {
     }
   },
 
-  "jquery 1.10.x": {
-    "profile": function(test) {
+  'jquery 1.10.x': {
+    'profile': function(test) {
       var server = http.createServer(function(req, res) {
         res.writeHead(200, {'Content-Type': 'text/html'});
         fs.readFile(__dirname+'/test-jquery-1-10.html', 'utf8', function(err, data) {
@@ -131,9 +135,11 @@ module.exports = {
         });
       }).listen(0);
 
-      profile("http://localhost:"+server.address().port, function(err, r) {
+      profile('http://localhost:'+server.address().port, function(err, r) {
         test.ifError(err);
-        if (err) return test.done();
+        if (err) {
+          return test.done();
+        }
 
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
@@ -159,8 +165,8 @@ module.exports = {
         test.equal(1, r.eventListeners.calls.keydown);
         test.equal(2, r.eventListeners.calls.click);
 
-        test.equal(2, r.querySelector.total)
-        test.equal(1, r.querySelector.calls['h1'])
+        test.equal(2, r.querySelector.total);
+        test.equal(1, r.querySelector.calls.h1);
 
         test.equal(1, r.jquery.event.ready.total);
         test.equal(1, r.jquery.event.keydown.total);
@@ -169,11 +175,11 @@ module.exports = {
         test.equal(null, r.jquery.event.focus);
 
         test.equal(1, r.jquery.find.total);
-        test.equal(1, r.jquery.find.calls['h1']);
+        test.equal(1, r.jquery.find.calls.h1);
         test.equal(1, r.jquery.find.explain.categories.tag);
 
         test.equal(0, r.jquery.match.total);
-        test.equal(null, r.jquery.match.calls['h1']);
+        test.equal(null, r.jquery.match.calls.h1);
 
         server.close();
         test.done();
@@ -181,8 +187,8 @@ module.exports = {
     }
   },
 
-  "jquery 1.11.x": {
-    "profile": function(test) {
+  'jquery 1.11.x': {
+    'profile': function(test) {
       var server = http.createServer(function(req, res) {
         res.writeHead(200, {'Content-Type': 'text/html'});
         fs.readFile(__dirname+'/test-jquery-1-11.html', 'utf8', function(err, data) {
@@ -190,9 +196,11 @@ module.exports = {
         });
       }).listen(0);
 
-      profile("http://localhost:"+server.address().port, function(err, r) {
+      profile('http://localhost:'+server.address().port, function(err, r) {
         test.ifError(err);
-        if (err) return test.done();
+        if (err) {
+          return test.done();
+        }
 
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
@@ -218,8 +226,8 @@ module.exports = {
         test.equal(1, r.eventListeners.calls.keydown);
         test.equal(2, r.eventListeners.calls.click);
 
-        test.equal(2, r.querySelector.total)
-        test.equal(1, r.querySelector.calls['h1'])
+        test.equal(2, r.querySelector.total);
+        test.equal(1, r.querySelector.calls.h1);
 
         test.equal(1, r.jquery.event.ready.total);
         test.equal(1, r.jquery.event.keydown.total);
@@ -228,11 +236,11 @@ module.exports = {
         test.equal(null, r.jquery.event.focus);
 
         test.equal(1, r.jquery.find.total);
-        test.equal(1, r.jquery.find.calls['h1']);
+        test.equal(1, r.jquery.find.calls.h1);
         test.equal(1, r.jquery.find.explain.categories.tag);
 
         test.equal(0, r.jquery.match.total);
-        test.equal(null, r.jquery.match.calls['h1']);
+        test.equal(null, r.jquery.match.calls.h1);
 
         server.close();
         test.done();
@@ -240,8 +248,8 @@ module.exports = {
     }
   },
 
-  "jquery 2.0.x": {
-    "profile": function(test) {
+  'jquery 2.0.x': {
+    'profile': function(test) {
       var server = http.createServer(function(req, res) {
         res.writeHead(200, {'Content-Type': 'text/html'});
         fs.readFile(__dirname+'/test-jquery-2-0.html', 'utf8', function(err, data) {
@@ -249,9 +257,11 @@ module.exports = {
         });
       }).listen(0);
 
-      profile("http://localhost:"+server.address().port, function(err, r) {
+      profile('http://localhost:'+server.address().port, function(err, r) {
         test.ifError(err);
-        if (err) return test.done();
+        if (err) {
+          return test.done();
+        }
 
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
@@ -277,8 +287,8 @@ module.exports = {
         test.equal(1, r.eventListeners.calls.keydown);
         test.equal(2, r.eventListeners.calls.click);
 
-        test.equal(2, r.querySelector.total)
-        test.equal(1, r.querySelector.calls['h1'])
+        test.equal(2, r.querySelector.total);
+        test.equal(1, r.querySelector.calls.h1);
 
         test.equal(1, r.jquery.event.ready.total);
         test.equal(1, r.jquery.event.keydown.total);
@@ -287,11 +297,11 @@ module.exports = {
         test.equal(null, r.jquery.event.focus);
 
         test.equal(1, r.jquery.find.total);
-        test.equal(1, r.jquery.find.calls['h1']);
+        test.equal(1, r.jquery.find.calls.h1);
         test.equal(1, r.jquery.find.explain.categories.tag);
 
         test.equal(0, r.jquery.match.total);
-        test.equal(null, r.jquery.match.calls['h1']);
+        test.equal(null, r.jquery.match.calls.h1);
 
         server.close();
         test.done();
@@ -299,8 +309,8 @@ module.exports = {
     }
   },
 
-  "jquery 2.1.x": {
-    "profile": function(test) {
+  'jquery 2.1.x': {
+    'profile': function(test) {
       var server = http.createServer(function(req, res) {
         res.writeHead(200, {'Content-Type': 'text/html'});
         fs.readFile(__dirname+'/test-jquery-2-1.html', 'utf8', function(err, data) {
@@ -308,9 +318,11 @@ module.exports = {
         });
       }).listen(0);
 
-      profile("http://localhost:"+server.address().port, function(err, r) {
+      profile('http://localhost:'+server.address().port, function(err, r) {
         test.ifError(err);
-        if (err) return test.done();
+        if (err) {
+          return test.done();
+        }
 
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
@@ -336,8 +348,8 @@ module.exports = {
         test.equal(1, r.eventListeners.calls.keydown);
         test.equal(2, r.eventListeners.calls.click);
 
-        test.equal(2, r.querySelector.total)
-        test.equal(1, r.querySelector.calls['h1'])
+        test.equal(2, r.querySelector.total);
+        test.equal(1, r.querySelector.calls.h1);
 
         test.equal(1, r.jquery.event.ready.total);
         test.equal(1, r.jquery.event.keydown.total);
@@ -346,11 +358,11 @@ module.exports = {
         test.equal(null, r.jquery.event.focus);
 
         test.equal(1, r.jquery.find.total);
-        test.equal(1, r.jquery.find.calls['h1']);
+        test.equal(1, r.jquery.find.calls.h1);
         test.equal(1, r.jquery.find.explain.categories.tag);
 
         test.equal(0, r.jquery.match.total);
-        test.equal(null, r.jquery.match.calls['h1']);
+        test.equal(null, r.jquery.match.calls.h1);
 
         server.close();
         test.done();
