@@ -6,7 +6,7 @@
     "dom-prof": "./cli.js"
   },
   "dependencies": {
-    "css-explain": "latest"
+    "css-explain": "~0.1.0"
   },
   "devDependencies": {
     "coffee-script": "latest",
