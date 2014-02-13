@@ -1,7 +1,7 @@
 var page = require('webpage').create();
 
 page.onInitialized = function() {
-  return page.injectJs('support.js');
+  page.injectJs('support.js');
 };
 
 page.onLoadFinished = function() {
@@ -9,7 +9,7 @@ page.onLoadFinished = function() {
     return window.$report();
   });
   console.log(JSON.stringify(report));
-  return phantom.exit();
+  phantom.exit();
 };
 
 page.open(phantom.args[0]);
