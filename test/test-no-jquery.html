@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * {}
+    body {}
+    .foo {}
+    #foo {}
+  </style>
+  <script>
+    function noop() {}
+    document.addEventListener("click", noop);
+    document.addEventListener("DOMContentLoaded", function() {
+      document.querySelectorAll("h1");
+      document.querySelector("h2");
+      document.querySelector("h1").addEventListener("click", noop);
+      document.removeEventListener("click", noop);
+    });
+  </script>
+</head>
+<body>
+  <h1>Hello</h1>
+</body>
+</html>
