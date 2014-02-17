@@ -110,21 +110,23 @@
       report.cssExplain = explainCssSelectors(report.cssRules);
       report.eventListeners = aggregateCallLog(report.calls.addEventListener, 'name');
       report.querySelector = aggregateCallLog(report.calls.querySelector.concat(report.calls.querySelectorAll), 'selector');
-      report.jquery.find = aggregateCallLog(report.calls.jquery.find, 'selector');
-      report.jquery.match = aggregateCallLog(report.calls.jquery.match, 'selector');
-      report.jquery.event.ready = {
-        total: 0
-      };
-      _ref = report.calls.jquery.ready;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        call = _ref[_i];
-        report.jquery.event.ready.total++;
-      }
-      _ref1 = report.jquery.event;
-      for (name in _ref1) {
-        props = _ref1[name];
-        if ((_ref2 = props.selectors) != null ? _ref2.length : void 0) {
-          report.jquery.event[name].explain = explainCssSelectors(props.selectors);
+      if (report.calls.jquery) {
+        report.jquery.find = aggregateCallLog(report.calls.jquery.find, 'selector');
+        report.jquery.match = aggregateCallLog(report.calls.jquery.match, 'selector');
+        report.jquery.event.ready = {
+          total: 0
+        };
+        _ref = report.calls.jquery.ready;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          call = _ref[_i];
+          report.jquery.event.ready.total++;
+        }
+        _ref1 = report.jquery.event;
+        for (name in _ref1) {
+          props = _ref1[name];
+          if ((_ref2 = props.selectors) != null ? _ref2.length : void 0) {
+            report.jquery.event[name].explain = explainCssSelectors(props.selectors);
+          }
         }
       }
       return report;
