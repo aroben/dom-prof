@@ -51,4 +51,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
   grunt.registerTask('default', ['coffee', 'jshint', 'nodeunit']);
+  grunt.registerTask('test', ['default']);
 };
