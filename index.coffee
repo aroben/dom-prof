@@ -56,14 +56,15 @@ exports.profile = (url) ->
     report.eventListeners = aggregateCallLog report.calls.addEventListener, 'name'
     report.querySelector  = aggregateCallLog report.calls.querySelector.concat(report.calls.querySelectorAll), 'selector'
 
-    report.jquery.find  = aggregateCallLog report.calls.jquery.find, 'selector'
-    report.jquery.match = aggregateCallLog report.calls.jquery.match, 'selector'
+    if report.calls.jquery
+      report.jquery.find  = aggregateCallLog report.calls.jquery.find, 'selector'
+      report.jquery.match = aggregateCallLog report.calls.jquery.match, 'selector'
 
-    report.jquery.event.ready = total: 0
-    for call in report.calls.jquery.ready
-      report.jquery.event.ready.total++
+      report.jquery.event.ready = total: 0
+      for call in report.calls.jquery.ready
+        report.jquery.event.ready.total++
 
-    for name, props of report.jquery.event when props.selectors?.length
-      report.jquery.event[name].explain = explainCssSelectors props.selectors
+      for name, props of report.jquery.event when props.selectors?.length
+        report.jquery.event[name].explain = explainCssSelectors props.selectors
 
     report
