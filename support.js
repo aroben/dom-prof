@@ -261,7 +261,7 @@
   };
 
   computeSerializedDomSize = function() {
-    return computeByteSize(document.body.innerHTML);
+    return computeByteSize(new XMLSerializer().serializeToString(document));
   };
 
   findScripts = function() {

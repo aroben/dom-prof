@@ -140,7 +140,7 @@ computeByteSize = (string) ->
 #
 # Returns Number of bytes.
 computeSerializedDomSize = ->
-  computeByteSize document.body.innerHTML
+  computeByteSize new XMLSerializer().serializeToString document
 
 # Finds all <script> elements.
 #

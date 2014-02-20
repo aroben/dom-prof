@@ -17,7 +17,7 @@ module.exports = {
         test.equal(6, r.dom.total);
         test.equal(3, r.dom.maxDepth);
         test.equal(2.3333333333333335, r.dom.averageDepth);
-        test.equal(20, r.dom.serializedSize);
+        test.equal(499, r.dom.serializedSize);
 
         test.equal(1, r.scriptTags);
         test.equal(0, r.stylesheetLinks);
@@ -61,7 +61,7 @@ module.exports = {
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
         test.equal(2.4285714285714284, r.dom.averageDepth);
-        test.equal(20, r.dom.serializedSize);
+        test.equal(519, r.dom.serializedSize);
 
         test.equal(2, r.scriptTags);
         test.equal(0, r.stylesheetLinks);
@@ -120,7 +120,7 @@ module.exports = {
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
         test.equal(2.4285714285714284, r.dom.averageDepth);
-        test.equal(20, r.dom.serializedSize);
+        test.equal(519, r.dom.serializedSize);
 
         test.equal(2, r.scriptTags);
         test.equal(0, r.stylesheetLinks);
@@ -179,7 +179,7 @@ module.exports = {
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
         test.equal(2.4285714285714284, r.dom.averageDepth);
-        test.equal(20, r.dom.serializedSize);
+        test.equal(529, r.dom.serializedSize);
 
         test.equal(2, r.scriptTags);
         test.equal(0, r.stylesheetLinks);
@@ -238,7 +238,7 @@ module.exports = {
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
         test.equal(2.4285714285714284, r.dom.averageDepth);
-        test.equal(20, r.dom.serializedSize);
+        test.equal(520, r.dom.serializedSize);
 
         test.equal(2, r.scriptTags);
         test.equal(0, r.stylesheetLinks);
@@ -297,7 +297,7 @@ module.exports = {
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
         test.equal(2.4285714285714284, r.dom.averageDepth);
-        test.equal(20, r.dom.serializedSize);
+        test.equal(528, r.dom.serializedSize);
 
         test.equal(2, r.scriptTags);
         test.equal(0, r.stylesheetLinks);
@@ -356,7 +356,7 @@ module.exports = {
         test.equal(7, r.dom.total);
         test.equal(3, r.dom.maxDepth);
         test.equal(2.4285714285714284, r.dom.averageDepth);
-        test.equal(20, r.dom.serializedSize);
+        test.equal(519, r.dom.serializedSize);
 
         test.equal(2, r.scriptTags);
         test.equal(0, r.stylesheetLinks);
